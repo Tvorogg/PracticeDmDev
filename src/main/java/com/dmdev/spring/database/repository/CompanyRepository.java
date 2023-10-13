@@ -1,15 +1,35 @@
 package com.dmdev.spring.database.repository;
 
+import com.dmdev.spring.bpp.Auditing;
+import com.dmdev.spring.bpp.InjectBean;
+import com.dmdev.spring.bpp.Transaction;
+import com.dmdev.spring.database.entity.Company;
 import com.dmdev.spring.database.pool.ConnectionPool;
 
-public class CompanyRepository {
-    private final ConnectionPool connectionPool;
+import javax.annotation.PostConstruct;
+import java.util.Optional;
 
-    public CompanyRepository(ConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
+@Transaction
+@Auditing
+
+public class CompanyRepository implements CrudRepository<Integer, Company>{
+
+    @InjectBean
+    private ConnectionPool connectionPool;
+
+    @PostConstruct
+    private void init(){
+        System.out.println("Init company repository");
     }
 
-    public static CompanyRepository of(ConnectionPool connectionPool){
-        return new CompanyRepository(connectionPool);
+    @Override
+    public Optional<Company> findById(Integer id) {
+        System.out.println("FindById method ...");
+        return Optional.of(new Company(id));
+    }
+
+    @Override
+    public void delete(Company entity) {
+        System.out.println("Delete method ...");
     }
 }
